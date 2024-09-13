@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaDevices API Example</title>
+</head>
+<body>
+    <video id="video" autoplay></video>
+    <button id="exitButton">Exit</button>
+
+    <script>
+        let stream = null; // Declare a global variable to store the stream
+
+        // Function to handle the media stream
+        function handleStream(mediaStream) {
+            const video = document.getElementById('video');
+            stream = mediaStream;  // Save the stream to the global variable
+            video.srcObject = stream;
+        }
+
+        // Function to handle errors
+        function handleError(error) {
+            console.error('Error accessing media devices.', error);
+        }
+
+        // Check if MediaDevices and getUserMedia are supported
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Request access to the camera and microphone
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(handleStream)
+                .catch(handleError);
+        } else {
+            console.error('MediaDevices API is not supported.');
+        }
+
+        // Function to stop the media stream
+        function stopStream() {
+            if (stream) {
+                // Stop all tracks of the stream
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                console.log('Camera stopped.');
+            } else {
+                console.log('No active stream to stop.');
+            }
+        }
+
+        // Add event listener to the Exit button
+        document.getElementById('exitButton').addEventListener('click', stopStream);
+    </script>
+</body>
+</html>
+
+
+
